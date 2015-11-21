@@ -6,11 +6,8 @@ public class MotorControl {
 	private Victor leftMotor,rightMotor;
 	private RobotDrive drive;
 	private double
-		runCapFactor = 0.6, //Forward and Backward
-		turnCapFactor = 0.7; //Turning
-	private boolean 
-		turboRun = false,
-		turboTurn = false;
+		runCapFactor = 0.5, //Forward and Backward
+		turnCapFactor = 0.5; //Turning
 	
 	public MotorControl(int pinLeft,int pinRight) {
 		leftMotor = new Victor(pinLeft);
@@ -18,35 +15,17 @@ public class MotorControl {
 		drive = new RobotDrive(leftMotor,rightMotor);
 	}
 	
-	public void teleopDrive(double xAxis,double yAxis,boolean turnToggle,boolean runToggle) {
-		if (turnToggle) {
-			turboTurn = !turboTurn;
-		}
-		if (runToggle) {
-			turboRun = !turboRun;
-		}
-		if (!turboTurn) {
-			xAxis *= turnCapFactor;
-		}
-		if (!turboRun) {
-			yAxis *= runCapFactor;
-		}
-		drive.arcadeDrive(xAxis,yAxis);
+	public void teleopDrive(double xAxis,double yAxis) {
+		xAxis = ramp(xAxis);
+		yAxis = ramp(yAxis);
+		xAxis *= turnCapFactor;
+		yAxis *= runCapFactor;
+		drive.arcadeDrive(yAxis,xAxis);
 	}
 	
-	public void setTurboRun(boolean turboRun) {
-		this.turboRun = turboRun;
-	}
-	
-	public void setTurboTurn(boolean turboTurn) {
-		this.turboTurn = turboTurn;
-	}
-	
-	public boolean getTurboRun() {
-		return this.turboRun;
-	}
-	
-	public boolean getTurboTurn() {
-		return this.turboTurn;
+	public static double ramp(double input) {
+		double rampedVal;
+		rampedVal = Math.pow(input, 3);
+		return rampedVal;
 	}
 }

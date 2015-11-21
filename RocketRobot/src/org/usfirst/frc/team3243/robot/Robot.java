@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.*;
 public class Robot extends IterativeRobot {
 	private MotorControl motor;
 	private InputControl input;
+	private PneumaticControl air;
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -20,13 +21,16 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
     	motor = new MotorControl(RobotMap.PIN_SPEED_LEFT,RobotMap.PIN_SPEED_RIGHT);
     	input = new InputControl(RobotMap.PIN_JOY);
+    	if (RobotMap.PNEUMATIC_ON) {
+    		air = new PneumaticControl(RobotMap.PIN_CANNON);
+    	}
     }
 
     /**
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-    	
+    	anyPeriodic();
     }
 
     /**
@@ -35,17 +39,38 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
     	motor.teleopDrive(
     			input.getAxis(RobotMap.LEFT_X),
-    			input.getAxis(RobotMap.LEFT_Y),
-    			input.getButton(RobotMap.TURN_TOGGLE),
-    			input.getButton(RobotMap.RUN_TOGGLE)
+    			input.getAxis(RobotMap.LEFT_Y)
     			);
+    	if (RobotMap.PNEUMATIC_ON) {
+	    	if (input.getButton(RobotMap.FIRE)) {
+	    		air.fire();
+	    	}
+	    	if (input.getButton(RobotMap.COMP_TOGGLE)) {
+	    		air.setCompressor(!air.getCompressorOn());
+	    	}
+	    	if (input.getButton(RobotMap.FIRE_EMPTY)) {
+	    		air.fireUntilEmpty();
+	    	}
+	    	if (input.getButton(RobotMap.FIRE_STOP)) {
+	    		air.stopFire();
+	    	}
+    	}
+    	anyPeriodic();
     }
     
     /**
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
-    
+    	anyPeriodic();
     }
     
+    /**
+     * This function is called periodically no matter what operation mode
+     */
+    public void anyPeriodic() {
+    	if (RobotMap.PNEUMATIC_ON) {
+    		air.checkCannon();
+    	}
+    }
 }
