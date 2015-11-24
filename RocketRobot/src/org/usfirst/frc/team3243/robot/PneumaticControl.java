@@ -7,7 +7,7 @@ public class PneumaticControl {
 	private Solenoid cannon;
 	private double fireDelay=0.2;
 	private Timer fireTimer;
-	private boolean set;
+	private boolean set,emptyFire;
 	
 	public PneumaticControl(int cannonPin) {
 		comp = new Compressor();
@@ -18,11 +18,9 @@ public class PneumaticControl {
 	public void setCompressor(boolean set) {
 		if (set) {
 			comp.start();
-			set = true;
 		}
 		else {
 			comp.stop();
-			set = false;
 		}
 	}
 	public boolean getCompressorOn() {
@@ -36,18 +34,17 @@ public class PneumaticControl {
 	}
 	
 	public void fireUntilEmpty(){
-		cannon.set(true);
-	}
-	
-	public void stopFire() {
-		cannon.set(false);
+		cannon.set(!emptyFire);
+		emptyFire = !emptyFire;
 	}
 	
 	public void checkCannon() {
 		if (fireTimer.get() >= fireDelay) {
 			fireTimer.reset();
 			fireTimer.stop();
-			cannon.set(false);
+			if (!emptyFire) {
+				cannon.set(false);
+			}
 		}
 	}
 }

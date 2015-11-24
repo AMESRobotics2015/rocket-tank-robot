@@ -16,16 +16,21 @@ public class MotorControl {
 	}
 	
 	public void teleopDrive(double xAxis,double yAxis) {
-		xAxis = ramp(xAxis);
-		yAxis = ramp(yAxis);
+		xAxis = Math.min(Math.max(-1,ramp(xAxis)),1);
+		yAxis = Math.min(Math.max(-1,ramp(yAxis)),1);
 		xAxis *= turnCapFactor;
 		yAxis *= runCapFactor;
 		drive.arcadeDrive(yAxis,xAxis);
 	}
 	
+	public void teleopAim(double xAxis,double yAxis) {
+		
+	}
+	
+	//Don't forget to cap with Math.min and/or Math.max if needed!
 	public static double ramp(double input) {
 		double rampedVal;
-		rampedVal = Math.pow(input, 3);
+		rampedVal = Math.pow(4*input/3, 3);
 		return rampedVal;
 	}
 }

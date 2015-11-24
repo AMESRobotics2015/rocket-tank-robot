@@ -16,8 +16,7 @@ public class RobotMap {
 		RUN_TOGGLE=6,
 		COMP_TOGGLE=2,
 		FIRE=1,
-		FIRE_EMPTY=3,
-		FIRE_STOP=4;
+		FIRE_EMPTY=3;
 	public static final boolean
-		PNEUMATIC_ON=false;
+		PNEUMATIC_ON=true;//compressor and cannon can only be used when this is true.
 }

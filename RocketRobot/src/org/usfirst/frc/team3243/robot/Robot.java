@@ -30,6 +30,15 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
+    	//Move out to circles
+    	//Turn to face hoop
+    	//Move to appropriate circle
+    	//Aim at target
+    	//Fire
+    	//Move back to center circle
+    	//Turn to face reload station
+    	//Return to reload station
+    	//Wait for reload or stop program
     	anyPeriodic();
     }
 
@@ -41,18 +50,22 @@ public class Robot extends IterativeRobot {
     			input.getAxis(RobotMap.LEFT_X),
     			input.getAxis(RobotMap.LEFT_Y)
     			);
+    	motor.teleopAim(
+    			input.getAxis(RobotMap.RIGHT_X),
+    			input.getAxis(RobotMap.RIGHT_Y)
+    			);
     	if (RobotMap.PNEUMATIC_ON) {
 	    	if (input.getButton(RobotMap.FIRE)) {
 	    		air.fire();
 	    	}
 	    	if (input.getButton(RobotMap.COMP_TOGGLE)) {
-	    		air.setCompressor(!air.getCompressorOn());
+	    		air.setCompressor(true);
+	    	}
+	    	else{
+	    		air.setCompressor(false);
 	    	}
 	    	if (input.getButton(RobotMap.FIRE_EMPTY)) {
 	    		air.fireUntilEmpty();
-	    	}
-	    	if (input.getButton(RobotMap.FIRE_STOP)) {
-	    		air.stopFire();
 	    	}
     	}
     	anyPeriodic();
@@ -69,6 +82,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically no matter what operation mode
      */
     public void anyPeriodic() {
+    	//Turn off cannon once its timer goes off
     	if (RobotMap.PNEUMATIC_ON) {
     		air.checkCannon();
     	}
