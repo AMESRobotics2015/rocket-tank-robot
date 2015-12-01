@@ -1,0 +1,7 @@
+Front angle (deg): 55
+Mid angle (deg): 35
+Back angle (deg): 45
+
+Front PSI: 70
+Mid PSI: 85
+Back PSI: 
