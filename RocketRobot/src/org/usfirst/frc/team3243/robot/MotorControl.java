@@ -3,34 +3,123 @@ package org.usfirst.frc.team3243.robot;
 import edu.wpi.first.wpilibj.*;
 
 public class MotorControl {
-	private Victor leftMotor,rightMotor;
+	private SpeedController leftMotor,rightMotor;
+	//Turret controls vertical aim, pivot controls horizontal aim.
+	private SpeedController turret,pivot;
+	private DigitalInput turretSwitch,pivotSwitch;//Limit Switches
 	private RobotDrive drive;
 	private double
-		runCapFactor = 0.5, //Forward and Backward
-		turnCapFactor = 0.5; //Turning
+		runCapFactor = 0.8, //Forward and Backward
+		turnCapFactor = 1.0, //Turning
+		turretCapFactor = 0.7, //Vertical Aim
+		pivotCapFactor = 0.5, //Horizontal aim
+		turretRate = 0.1,
+		pivotRate = 0.1;
+	private boolean manualTurret = true,manualPivot = true;
+	private int tclicksLeft = 0,turretPhase = 0;
+	private int pclicksLeft = 0,pivotPhase = 0;
+	private Counter turretCounter,pivotCounter;
+	private Timer turretTimer,pivotTimer;
 	
-	public MotorControl(int pinLeft,int pinRight) {
+	public MotorControl(int pinLeft,int pinRight,int pinTurret,int pinTSwitch,int pinPivot,int pinPSwitch,
+			double turretRate,double pivotRate) {
 		leftMotor = new Victor(pinLeft);
 		rightMotor = new Victor(pinRight);
+		turret = new Victor(pinTurret);
+		pivot = new Victor(pinPivot);
+		turretSwitch = new DigitalInput(pinTSwitch);
+		pivotSwitch = new DigitalInput(pinPSwitch);
 		drive = new RobotDrive(leftMotor,rightMotor);
+		turretCounter = new Counter(turretSwitch);
+		pivotCounter = new Counter(pivotSwitch);
+		turretTimer = new Timer();
+		pivotTimer = new Timer();
+		this.pivotRate = pivotRate;
+		this.turretRate = turretRate;
 	}
 	
 	public void teleopDrive(double xAxis,double yAxis) {
-		xAxis = Math.min(Math.max(-1,ramp(xAxis)),1);
-		yAxis = Math.min(Math.max(-1,ramp(yAxis)),1);
 		xAxis *= turnCapFactor;
 		yAxis *= runCapFactor;
+		xAxis = ramp(xAxis);
+		yAxis = ramp(yAxis);
 		drive.arcadeDrive(yAxis,xAxis);
 	}
 	
-	public void teleopAim(double xAxis,double yAxis) {
-		
+	public void setTurretPosition(int clicks) {
+		turret.set(-1.0);
+		turretPhase = 0;
+		tclicksLeft = clicks;
+		turretCounter.reset();
+		manualTurret = false;
+		turretTimer.reset();
 	}
 	
-	//Don't forget to cap with Math.min and/or Math.max if needed!
+	public void setPivotPosition(int clicks) {
+		pivot.set(-1.0);
+		turretPhase = 0;
+		pclicksLeft = clicks;
+		pivotCounter.reset();
+		manualPivot = false;
+		pivotTimer.reset();
+	}
+	
+	public void updateTurretPivot() {
+		if (!manualTurret) {
+			if (turretPhase == 0) {
+				if (turretTimer.get() > 0.5) {
+					turretPhase = 1;
+					turret.set(0);
+				}
+			}
+			else if (turretPhase == 1) {
+				if (turretCounter.get()<tclicksLeft) {
+					turret.set(turretRate);
+				}
+				else {
+					turretPhase = 2;
+				}
+			}
+		}
+		if (!manualPivot) {
+			if (pivotPhase == 0) {
+				if (pivotTimer.get() > 0.5) {
+					pivotPhase = 1;
+					pivot.set(0);
+				}
+			}
+			else if (pivotPhase == 1) {
+				if (pivotCounter.get()<pclicksLeft) {
+					pivot.set(pivotRate);
+				}
+				else {
+					pivotPhase = 2;
+				}
+			}
+		}
+	}
+	
+	public void abortSetAim() {
+		turret.set(0);
+		pivot.set(0);
+		manualPivot = true;
+		manualTurret = true;
+	}
+	
+	public void teleopAim(double xAxis,double yAxis) {
+		if (manualTurret) {
+			turret.set(ramp(yAxis*turretCapFactor));
+		}
+		if (manualPivot) {
+			pivot.set(ramp(xAxis*pivotCapFactor));
+		}
+	}
+	
 	public static double ramp(double input) {
+		input = Math.min(Math.max(-1, input),1);
 		double rampedVal;
 		rampedVal = Math.pow(4*input/3, 3);
+		rampedVal = Math.min(Math.max(-1,rampedVal),1);
 		return rampedVal;
 	}
 }

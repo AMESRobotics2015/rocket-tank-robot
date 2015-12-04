@@ -27,6 +27,10 @@ public class PneumaticControl {
 		return set;
 	}
 	
+	public boolean getCharged(){
+		return comp.getPressureSwitchValue();
+	}
+	
 	public void fire() {
 		cannon.set(true);
 		fireTimer.reset();

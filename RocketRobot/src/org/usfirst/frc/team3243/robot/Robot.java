@@ -19,7 +19,9 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-    	motor = new MotorControl(RobotMap.PIN_SPEED_LEFT,RobotMap.PIN_SPEED_RIGHT);
+    	motor = new MotorControl(RobotMap.PIN_SPEED_LEFT,RobotMap.PIN_SPEED_RIGHT,
+    			RobotMap.PIN_SPEED_TURRET,RobotMap.PIN_SWITCH_TURRET,RobotMap.PIN_SPEED_PIVOT,RobotMap.PIN_SWITCH_PIVOT,
+    			RobotMap.TURRET_RATE,RobotMap.PIVOT_RATE);
     	input = new InputControl(RobotMap.PIN_JOY);
     	if (RobotMap.PNEUMATIC_ON) {
     		air = new PneumaticControl(RobotMap.PIN_CANNON);
@@ -54,6 +56,18 @@ public class Robot extends IterativeRobot {
     			input.getAxis(RobotMap.RIGHT_X),
     			input.getAxis(RobotMap.RIGHT_Y)
     			);
+    	if (input.getButton(RobotMap.TURRET_MANUAL)) {
+    		motor.abortSetAim();//Immediately set to manual aim.
+    	}
+    	if (input.getButton(RobotMap.PRESET_FRONT)) {
+    		motor.setTurretPosition(RobotMap.CLICKS_FRONT);
+    	}
+    	if (input.getButton(RobotMap.PRESET_MID)) {
+    		motor.setTurretPosition(RobotMap.CLICKS_MID);
+    	}
+    	if (input.getButton(RobotMap.PRESET_BACK)) {
+    		motor.setTurretPosition(RobotMap.CLICKS_BACK);
+    	}
     	if (RobotMap.PNEUMATIC_ON) {
 	    	if (input.getButton(RobotMap.FIRE)) {
 	    		air.fire();
@@ -68,6 +82,7 @@ public class Robot extends IterativeRobot {
 	    		air.fireUntilEmpty();
 	    	}
     	}
+    	motor.updateTurretPivot();
     	anyPeriodic();
     }
     
