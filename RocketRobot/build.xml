@@ -24,7 +24,7 @@
   <property file="${user.home}/wpilib/wpilib.properties"/>
   <property file="build.properties"/>
   <property file="${user.home}/wpilib/java/${version}/ant/build.properties"/>
-  
+  <property name="target" value="10.32.44.23"/>
   <import file="${wpilib.ant.dir}/build.xml"/>
 
 </project> 

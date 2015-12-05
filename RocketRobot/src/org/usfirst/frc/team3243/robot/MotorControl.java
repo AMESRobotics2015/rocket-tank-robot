@@ -118,7 +118,7 @@ public class MotorControl {
 	public static double ramp(double input) {
 		input = Math.min(Math.max(-1, input),1);
 		double rampedVal;
-		rampedVal = Math.pow(4*input/3, 3);
+		rampedVal = Math.pow(input,1);
 		rampedVal = Math.min(Math.max(-1,rampedVal),1);
 		return rampedVal;
 	}
