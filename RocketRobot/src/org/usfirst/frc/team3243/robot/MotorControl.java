@@ -17,7 +17,7 @@ public class MotorControl {
 		pivotRate = 0.1;
 	private boolean manualTurret = true,manualPivot = true;
 	private int tclicksLeft = 0,turretPhase = 0;
-	private int pclicksLeft = 0,pivotPhase = 0;
+	private int pclicksLeft = 2,pivotPhase = 2;
 	private Counter turretCounter,pivotCounter;
 	private Timer turretTimer,pivotTimer;
 	
@@ -25,8 +25,8 @@ public class MotorControl {
 			double turretRate,double pivotRate) {
 		leftMotor = new Victor(pinLeft);
 		rightMotor = new Victor(pinRight);
-		turret = new Victor(pinTurret);
-		pivot = new Victor(pinPivot);
+		turret = new VictorSP(pinTurret);
+		pivot = new VictorSP(pinPivot);
 		turretSwitch = new DigitalInput(pinTSwitch);
 		pivotSwitch = new DigitalInput(pinPSwitch);
 		drive = new RobotDrive(leftMotor,rightMotor);
@@ -46,8 +46,12 @@ public class MotorControl {
 		drive.arcadeDrive(yAxis,xAxis);
 	}
 	
+	public void autonomousDrive(double speed,double turn) {
+		drive.drive(speed, turn);
+	}
+	
 	public void setTurretPosition(int clicks) {
-		turret.set(-1.0);
+		turret.set(-0.3);
 		turretPhase = 0;
 		tclicksLeft = clicks;
 		turretCounter.reset();
@@ -56,7 +60,7 @@ public class MotorControl {
 	}
 	
 	public void setPivotPosition(int clicks) {
-		pivot.set(-1.0);
+		pivot.set(-0.3);
 		turretPhase = 0;
 		pclicksLeft = clicks;
 		pivotCounter.reset();
@@ -67,7 +71,7 @@ public class MotorControl {
 	public void updateTurretPivot() {
 		if (!manualTurret) {
 			if (turretPhase == 0) {
-				if (turretTimer.get() > 0.5) {
+				if (turretTimer.get() > 1.0) {
 					turretPhase = 1;
 					turret.set(0);
 				}
@@ -83,7 +87,7 @@ public class MotorControl {
 		}
 		if (!manualPivot) {
 			if (pivotPhase == 0) {
-				if (pivotTimer.get() > 0.5) {
+				if (pivotTimer.get() > 1.0) {
 					pivotPhase = 1;
 					pivot.set(0);
 				}
@@ -99,6 +103,10 @@ public class MotorControl {
 		}
 	}
 	
+	public boolean atSetAimPosition() {
+		return pivotPhase == 2 && turretPhase == 2;
+	}
+	
 	public void abortSetAim() {
 		turret.set(0);
 		pivot.set(0);
@@ -107,12 +115,12 @@ public class MotorControl {
 	}
 	
 	public void teleopAim(double xAxis,double yAxis) {
-		if (manualTurret) {
+		//if (manualTurret) {
 			turret.set(ramp(yAxis*turretCapFactor));
-		}
-		if (manualPivot) {
+		//}
+		//if (manualPivot) {
 			pivot.set(ramp(xAxis*pivotCapFactor));
-		}
+		//}
 	}
 	
 	public static double ramp(double input) {

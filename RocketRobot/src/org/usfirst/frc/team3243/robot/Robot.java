@@ -2,6 +2,8 @@
 package org.usfirst.frc.team3243.robot;
 
 import edu.wpi.first.wpilibj.*;
+import org.usfirst.frc.team3243.robot.instruction.*;
+import java.util.Stack;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -14,6 +16,8 @@ public class Robot extends IterativeRobot {
 	private MotorControl motor;
 	private InputControl input;
 	private PneumaticControl air;
+	private DigitalInput doTurn;
+	private Stack<Instruction> autonomousRoutine;
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -23,15 +27,12 @@ public class Robot extends IterativeRobot {
     			RobotMap.PIN_SPEED_TURRET,RobotMap.PIN_SWITCH_TURRET,RobotMap.PIN_SPEED_PIVOT,RobotMap.PIN_SWITCH_PIVOT,
     			RobotMap.TURRET_RATE,RobotMap.PIVOT_RATE);
     	input = new InputControl(RobotMap.PIN_JOY);
+    	autonomousRoutine = new Stack<Instruction>();
     	if (RobotMap.PNEUMATIC_ON) {
     		air = new PneumaticControl(RobotMap.PIN_CANNON);
+    		air.setCompressor(true);
     	}
-    }
-
-    /**
-     * This function is called periodically during autonomous
-     */
-    public void autonomousPeriodic() {
+    	//SET UP AUTONOMOUS ROUTINE
     	//Move out to circles
     	//Turn to face hoop
     	//Move to appropriate circle
@@ -41,6 +42,18 @@ public class Robot extends IterativeRobot {
     	//Turn to face reload station
     	//Return to reload station
     	//Wait for reload or stop program
+    }
+
+    /**
+     * This function is called periodically during autonomous
+     */
+    public void autonomousPeriodic() {
+    	while (autonomousRoutine.size()>0){
+    		autonomousRoutine.peek().execute();
+    		if (autonomousRoutine.peek().finished()) {
+    			autonomousRoutine.pop();
+    		}
+    	}
     	anyPeriodic();
     }
 
@@ -53,13 +66,13 @@ public class Robot extends IterativeRobot {
     			input.getAxis(RobotMap.LEFT_Y)
     			);
     	motor.teleopAim(
-    			input.getAxis(RobotMap.RIGHT_X),
-    			input.getAxis(RobotMap.RIGHT_Y)
+    			input.getAxis(RobotMap.RIGHT_Y),
+    			input.getAxis(RobotMap.RIGHT_X)
     			);
     	if (input.getButton(RobotMap.TURRET_MANUAL)) {
     		motor.abortSetAim();//Immediately set to manual aim.
     	}
-    	if (input.getButton(RobotMap.PRESET_FRONT)) {
+    	/*if (input.getButton(RobotMap.PRESET_FRONT)) {
     		motor.setTurretPosition(RobotMap.CLICKS_FRONT);
     	}
     	if (input.getButton(RobotMap.PRESET_MID)) {
@@ -67,22 +80,21 @@ public class Robot extends IterativeRobot {
     	}
     	if (input.getButton(RobotMap.PRESET_BACK)) {
     		motor.setTurretPosition(RobotMap.CLICKS_BACK);
-    	}
+    	}*/
     	if (RobotMap.PNEUMATIC_ON) {
 	    	if (input.getButton(RobotMap.FIRE)) {
 	    		air.fire();
 	    	}
-	    	if (input.getButton(RobotMap.COMP_TOGGLE)) {
-	    		air.setCompressor(true);
+	    	if (input.getButtonTapped(RobotMap.COMP_TOGGLE)) {
+	    		boolean wasOn = air.getCompressorOn();
+	    		air.setCompressor(!wasOn);
 	    	}
-	    	else{
-	    		air.setCompressor(false);
-	    	}
-	    	if (input.getButton(RobotMap.FIRE_EMPTY)) {
+	    	/*if (input.getButton(RobotMap.FIRE_EMPTY)) {
 	    		air.fireUntilEmpty();
-	    	}
+	    	}*/
     	}
     	motor.updateTurretPivot();
+    	input.updateButtons();
     	anyPeriodic();
     }
     

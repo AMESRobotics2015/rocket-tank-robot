@@ -16,6 +16,7 @@ public class PneumaticControl {
 	}
 	
 	public void setCompressor(boolean set) {
+		this.set = set;
 		if (set) {
 			comp.start();
 		}
@@ -33,6 +34,7 @@ public class PneumaticControl {
 	
 	public void fire() {
 		cannon.set(true);
+		emptyFire = false;
 		fireTimer.reset();
 		fireTimer.start();
 	}

@@ -4,12 +4,14 @@ public class RobotMap {
 	public static final int 
 		PIN_SPEED_LEFT=1,//Left Motor
 		PIN_SPEED_RIGHT=2,//Right Motor
-		PIN_SPEED_TURRET=3,//Turret Motor (Up/down)
-		PIN_SPEED_PIVOT=4,//Pivot Motor (Left/right)
+		PIN_SPEED_TURRET=4,//Turret Motor (Up/down)
+		PIN_SPEED_PIVOT=3,//Pivot Motor (Left/right)
 		PIN_SWITCH_TURRET=1,//Turret Limit Switch
 		PIN_SWITCH_PIVOT=2,//Pivot Limit Switch
 		PIN_JOY=0,
-		PIN_CANNON=0;
+		PIN_CANNON=0,
+		PIN_ARDUINO_IN=0,
+		PIN_ARDUINO_OUT=1;
 	public static final int 
 		LEFT_X=0,
 		LEFT_Y=1,
@@ -23,7 +25,7 @@ public class RobotMap {
 		PRESET_FRONT=4,
 		PRESET_MID=9,
 		PRESET_BACK=10,
-		FIRE=1,
+		FIRE=8,
 		FIRE_EMPTY=3;
 	public static final int
 		CLICKS_FRONT=3,
