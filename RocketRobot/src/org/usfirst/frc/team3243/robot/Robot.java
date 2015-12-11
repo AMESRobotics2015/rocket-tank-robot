@@ -66,8 +66,8 @@ public class Robot extends IterativeRobot {
     			input.getAxis(RobotMap.LEFT_Y)
     			);
     	motor.teleopAim(
-    			input.getAxis(RobotMap.RIGHT_Y),
-    			input.getAxis(RobotMap.RIGHT_X)
+    			input.getAxis(RobotMap.RIGHT_X),
+    			input.getAxis(RobotMap.RIGHT_Y)
     			);
     	if (input.getButton(RobotMap.TURRET_MANUAL)) {
     		motor.abortSetAim();//Immediately set to manual aim.
@@ -85,10 +85,11 @@ public class Robot extends IterativeRobot {
 	    	if (input.getButton(RobotMap.FIRE)) {
 	    		air.fire();
 	    	}
-	    	if (input.getButtonTapped(RobotMap.COMP_TOGGLE)) {
+	    	/*if (input.getButtonTapped(RobotMap.COMP_TOGGLE)) {
 	    		boolean wasOn = air.getCompressorOn();
 	    		air.setCompressor(!wasOn);
-	    	}
+	    	}*/
+	    	air.setCompressor(true);
 	    	/*if (input.getButton(RobotMap.FIRE_EMPTY)) {
 	    		air.fireUntilEmpty();
 	    	}*/

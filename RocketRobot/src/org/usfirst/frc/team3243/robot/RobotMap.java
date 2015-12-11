@@ -4,8 +4,8 @@ public class RobotMap {
 	public static final int 
 		PIN_SPEED_LEFT=1,//Left Motor
 		PIN_SPEED_RIGHT=2,//Right Motor
-		PIN_SPEED_TURRET=4,//Turret Motor (Up/down)
-		PIN_SPEED_PIVOT=3,//Pivot Motor (Left/right)
+		PIN_SPEED_TURRET=3,//Turret Motor (Up/down)
+		PIN_SPEED_PIVOT=4,//Pivot Motor (Left/right)
 		PIN_SWITCH_TURRET=1,//Turret Limit Switch
 		PIN_SWITCH_PIVOT=2,//Pivot Limit Switch
 		PIN_JOY=0,
@@ -35,5 +35,5 @@ public class RobotMap {
 		TURRET_RATE = 0.1,//Speed per click
 		PIVOT_RATE = 0.1;
 	public static final boolean
-		PNEUMATIC_ON=true;//compressor and cannon can only be used when this is true.
+		PNEUMATIC_ON=false;//compressor and cannon can only be used when this is true.
 }

@@ -11,10 +11,10 @@ public class MotorControl {
 	private double
 		runCapFactor = 0.8, //Forward and Backward
 		turnCapFactor = 1.0, //Turning
-		turretCapFactor = 0.7, //Vertical Aim
-		pivotCapFactor = 0.5, //Horizontal aim
-		turretRate = 0.1,
-		pivotRate = 0.1;
+		turretCapFactor = 1.0, //Vertical Aim
+		pivotCapFactor = 0.1; //Horizontal aim
+		/*turretRate = 0.0,
+		pivotRate = 0.01;*/
 	private boolean manualTurret = true,manualPivot = true;
 	private int tclicksLeft = 0,turretPhase = 0;
 	private int pclicksLeft = 2,pivotPhase = 2;
@@ -34,8 +34,8 @@ public class MotorControl {
 		pivotCounter = new Counter(pivotSwitch);
 		turretTimer = new Timer();
 		pivotTimer = new Timer();
-		this.pivotRate = pivotRate;
-		this.turretRate = turretRate;
+		/*this.pivotRate = pivotRate;
+		this.turretRate = turretRate;*/
 	}
 	
 	public void teleopDrive(double xAxis,double yAxis) {
@@ -78,7 +78,7 @@ public class MotorControl {
 			}
 			else if (turretPhase == 1) {
 				if (turretCounter.get()<tclicksLeft) {
-					turret.set(turretRate);
+					//turret.set(turretRate);
 				}
 				else {
 					turretPhase = 2;
@@ -94,7 +94,7 @@ public class MotorControl {
 			}
 			else if (pivotPhase == 1) {
 				if (pivotCounter.get()<pclicksLeft) {
-					pivot.set(pivotRate);
+					//pivot.set(pivotRate);
 				}
 				else {
 					pivotPhase = 2;
